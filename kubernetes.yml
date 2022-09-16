@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: golang-gin-api-deployment
+  labels:
+    app: gin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gin
+  template:
+    metadata:
+      labels:
+        app: gin
+    spec:
+      containers:
+      - name: golang-gin-api
+        image: golang-gin-api:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: "1"
+          requests:
+            memory: 256Mi
+            cpu: "0.2"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: golang-gin-api-service
+spec:
+  selector:
+    app: gin
+  ports:
+    - protocol: TCP
+      port: 83
+      targetPort: 8080
+  type: NodePort
+#run: golang-gin-api-deployment
